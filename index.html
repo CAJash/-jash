@@ -707,3 +707,24 @@ function setMT(el){
 </script>
 </body>
 </html>
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCBbPt6qf-iY6xGpZmGXXURpzdp0GzGhz0",
+  authDomain: "student-app-a7a9d.firebaseapp.com",
+  projectId: "student-app-a7a9d",
+  storageBucket: "student-app-a7a9d.firebasestorage.app",
+  messagingSenderId: "881681887743",
+  appId: "1:881681887743:web:1326c637ce2d00933537ca",
+  measurementId: "G-LWGD5KX0D7"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
