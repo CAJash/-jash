@@ -304,17 +304,18 @@ input:focus,textarea:focus{border-color:var(--green);background:#fff;}
     </div>
     <div class="lcard a2">
       <h2>Welcome back 👋</h2>
-      <div class="sub">New to JIC? <a href="#" onclick="go('s2')">Create a free account</a></div>
+      <div class="sub">No account yet? <a href="#" onclick="fbSignUp()">Create one free</a></div>
       <div class="soc">
-        <button class="sb" onclick="go('s2')">🌐 Google</button>
-        <button class="sb" onclick="go('s2')">🍎 Apple</button>
+        <button class="sb" onclick="fbGoogleSignIn()">🌐 Google</button>
+        <button class="sb" style="opacity:0.45;cursor:not-allowed;" title="Coming soon">🍎 Apple</button>
       </div>
       <div class="divline">or use email</div>
-      <div class="fg"><label>Email</label><input type="email" placeholder="you@example.com"/></div>
-      <div class="fg"><label>Password</label><input type="password" placeholder="••••••••"/></div>
-      <button class="btn btn-green btn-full" onclick="go('s2')" style="margin-top:8px;">Sign In →</button>
+      <div class="fg"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com"/></div>
+      <div class="fg"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')fbSignIn()"/></div>
+      <button id="btn-signin" data-label="Sign In →" class="btn btn-green btn-full" onclick="fbSignIn()" style="margin-top:8px;">Sign In →</button>
+      <button class="btn btn-outline btn-full" onclick="fbSignUp()" style="margin-top:8px;">Create Account →</button>
     </div>
-    <div class="lfoot a3"><a href="#">Forgot password?</a> · <a href="#">Privacy Policy</a></div>
+    <div class="lfoot a3"><a href="#" onclick="fbForgotPassword()">Forgot password?</a> · <a href="#">Privacy Policy</a></div>
   </div>
 </div>
 
@@ -379,7 +380,7 @@ input:focus,textarea:focus{border-color:var(--green);background:#fff;}
     </div>
     <div class="sbuser">
       <div class="avatar" style="width:32px;height:32px;background:var(--green-dim);color:var(--green-dark);font-size:0.7rem;">AR</div>
-      <div class="sbuserinfo"><strong>Arjun Rao</strong><span>CFA L1 · Student</span></div>
+      <div class="sbuserinfo"><strong class="user-name">Student</strong><span class="user-email">Loading…</span></div>
     </div>
     <nav class="sbnav">
       <button class="ni active"><span class="ico">🏠</span>Dashboard</button>
@@ -395,6 +396,7 @@ input:focus,textarea:focus{border-color:var(--green);background:#fff;}
     </nav>
     <div class="sbbot">
       <button class="ni" onclick="go('s1')"><span class="ico">⚙️</span>Settings</button>
+      <button class="ni" onclick="fbSignOut()" style="color:#c0392b;"><span class="ico">🚪</span>Sign Out</button>
     </div>
   </div>
   <div class="main">
@@ -411,7 +413,7 @@ input:focus,textarea:focus{border-color:var(--green);background:#fff;}
         <button class="lbtn" onclick="go('s5')">Join Now →</button>
       </div>
       <div class="welcome a2">
-        <h2>Good morning, Arjun 👋</h2>
+        <h2>Good morning, <span class="user-name">Student</span> 👋</h2>
         <p>You have 2 live classes today and 9 new replies in the community.</p>
       </div>
       <div class="sgrid a3">
@@ -705,16 +707,23 @@ function setMT(el){
   el.classList.add('active');
 }
 </script>
-</body>
-</html>
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+<!-- ══ FIREBASE SDK ══ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-analytics.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+  onAuthStateChanged,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
+// ── Firebase Config ──
 const firebaseConfig = {
   apiKey: "AIzaSyCBbPt6qf-iY6xGpZmGXXURpzdp0GzGhz0",
   authDomain: "student-app-a7a9d.firebaseapp.com",
@@ -725,6 +734,128 @@ const firebaseConfig = {
   measurementId: "G-LWGD5KX0D7"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// ── Helper: show toast message ──
+function toast(msg, isError=false){
+  let t = document.getElementById('fb-toast');
+  if(!t){ t = document.createElement('div'); t.id='fb-toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.style.cssText = `
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:${isError?'#c0392b':'#2e8b57'};color:#fff;
+    padding:10px 22px;border-radius:999px;font-size:0.82rem;font-weight:600;
+    font-family:'Outfit',sans-serif;z-index:9999;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+    animation:fadeUp .3s ease both;
+  `;
+  setTimeout(()=>t.remove(), 3500);
+}
+
+// ── Helper: set loading state on button ──
+function setLoading(btnId, loading){
+  const btn = document.getElementById(btnId);
+  if(!btn) return;
+  btn.disabled = loading;
+  btn.textContent = loading ? 'Please wait…' : btn.dataset.label;
+}
+
+// ── Update UI when user logs in ──
+function updateUserUI(user){
+  // Update sidebar avatar & name
+  const name = user.displayName || user.email.split('@')[0];
+  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2);
+  document.querySelectorAll('.user-name').forEach(el => el.textContent = name);
+  document.querySelectorAll('.user-initials').forEach(el => el.textContent = initials);
+  document.querySelectorAll('.user-email').forEach(el => el.textContent = user.email);
+}
+
+// ── Auth state listener ──
+onAuthStateChanged(auth, (user) => {
+  if(user){
+    updateUserUI(user);
+    // If on login screen, go to category
+    if(document.querySelector('#s1.active')) go('s2');
+  }
+});
+
+// ── Email / Password Sign In ──
+window.fbSignIn = async function(){
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  if(!email || !pass){ toast('Please enter email and password', true); return; }
+  setLoading('btn-signin', true);
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    toast('Welcome back! 👋');
+    go('s2');
+  } catch(e){
+    toast(friendlyError(e.code), true);
+  } finally { setLoading('btn-signin', false); }
+};
+
+// ── Email / Password Sign Up ──
+window.fbSignUp = async function(){
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  if(!email || !pass){ toast('Please enter email and password', true); return; }
+  if(pass.length < 6){ toast('Password must be at least 6 characters', true); return; }
+  setLoading('btn-signin', true);
+  try {
+    await createUserWithEmailAndPassword(auth, email, pass);
+    toast('Account created! Welcome to JIC 🎉');
+    go('s2');
+  } catch(e){
+    toast(friendlyError(e.code), true);
+  } finally { setLoading('btn-signin', false); }
+};
+
+// ── Google Sign In ──
+window.fbGoogleSignIn = async function(){
+  try {
+    await signInWithPopup(auth, provider);
+    toast('Signed in with Google ✓');
+    go('s2');
+  } catch(e){
+    toast(friendlyError(e.code), true);
+  }
+};
+
+// ── Sign Out ──
+window.fbSignOut = async function(){
+  await signOut(auth);
+  toast('Signed out. See you soon!');
+  go('s1');
+};
+
+// ── Forgot Password ──
+window.fbForgotPassword = async function(){
+  const email = document.getElementById('login-email').value.trim();
+  if(!email){ toast('Enter your email above first', true); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    toast('Reset email sent! Check your inbox 📧');
+  } catch(e){
+    toast(friendlyError(e.code), true);
+  }
+};
+
+// ── Friendly error messages ──
+function friendlyError(code){
+  const map = {
+    'auth/user-not-found':     'No account found with this email.',
+    'auth/wrong-password':     'Incorrect password. Please try again.',
+    'auth/invalid-email':      'Please enter a valid email address.',
+    'auth/email-already-in-use': 'An account already exists with this email.',
+    'auth/too-many-requests':  'Too many attempts. Please try again later.',
+    'auth/network-request-failed': 'Network error. Check your connection.',
+    'auth/popup-closed-by-user': 'Sign-in popup was closed.',
+  };
+  return map[code] || 'Something went wrong. Please try again.';
+}
+</script>
+</body>
+</html>
