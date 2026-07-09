@@ -1,861 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>JIC — Jash Institute of Commerce</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<style>
-:root{
-  --green:#2e8b57; --green-dark:#1a5c3a; --green-light:#3aac6e; --green-dim:rgba(46,139,87,0.12);
-  --orange:#d4620a; --orange-dim:rgba(212,98,10,0.12);
-  --bg:#f7f5f0; --card:#ffffff; --bg3:#f0ede6;
-  --ink:#1a1a14; --muted:#7a7a68; --muted2:#b0b09a;
-  --border:#e4e0d6; --border2:#ccc9bc;
-  --shadow:0 2px 12px rgba(26,26,20,0.08);
-  --shadow-lg:0 8px 40px rgba(26,26,20,0.12);
-  --r:14px; --r-sm:8px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow:hidden;}
-.screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden;}
-.screen.active{display:flex;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.a1{animation:fadeUp .45s ease both}
-.a2{animation:fadeUp .45s .08s ease both}
-.a3{animation:fadeUp .45s .16s ease both}
-.a4{animation:fadeUp .45s .24s ease both}
-.a5{animation:fadeUp .45s .32s ease both}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:99px;}
-/* Shared */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 22px;border-radius:var(--r-sm);font-family:'Outfit',sans-serif;font-size:0.87rem;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;text-decoration:none;}
-.btn-green{background:var(--green);color:#fff;}
-.btn-green:hover{background:var(--green-dark);transform:translateY(-1px);}
-.btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--border2);}
-.btn-outline:hover{border-color:var(--green);color:var(--green);}
-.btn-full{width:100%;}
-.tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:0.67rem;font-weight:700;}
-.tag-g{background:var(--green-dim);color:var(--green-dark);}
-.tag-o{background:var(--orange-dim);color:var(--orange);}
-.tag-m{background:rgba(26,26,20,0.06);color:var(--muted);}
-input,textarea{font-family:'Outfit',sans-serif;background:var(--bg3);border:1.5px solid var(--border);color:var(--ink);border-radius:var(--r-sm);padding:11px 16px;font-size:0.84rem;outline:none;transition:border-color 0.2s;}
-input:focus,textarea:focus{border-color:var(--green);background:#fff;}
-.back{width:36px;height:36px;border-radius:var(--r-sm);background:var(--card);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.95rem;transition:border-color 0.2s;flex-shrink:0;}
-.back:hover{border-color:var(--green);}
-.avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;}
-
-/* ── SCREEN 1: LOGIN ── */
-#s1{background:var(--bg);align-items:center;justify-content:center;}
-.lw{width:100%;max-width:390px;padding:20px;}
-.lhero{text-align:center;margin-bottom:32px;}
-.lcard{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:28px;box-shadow:var(--shadow);}
-.lcard h2{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;margin-bottom:4px;}
-.lcard .sub{font-size:0.79rem;color:var(--muted);margin-bottom:22px;line-height:1.6;}
-.lcard .sub a{color:var(--green);font-weight:600;text-decoration:none;}
-.fg{margin-bottom:13px;}
-.fg label{display:block;font-size:0.7rem;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:0.05em;text-transform:uppercase;}
-.fg input{width:100%;}
-.soc{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px;}
-.sb{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--bg3);font-size:0.78rem;font-weight:600;cursor:pointer;color:var(--ink);transition:border-color 0.2s;font-family:'Outfit',sans-serif;}
-.sb:hover{border-color:var(--border2);}
-.divline{display:flex;align-items:center;gap:10px;margin:14px 0;font-size:0.71rem;color:var(--muted2);}
-.divline::before,.divline::after{content:'';flex:1;height:1px;background:var(--border);}
-.lfoot{text-align:center;margin-top:14px;font-size:0.74rem;color:var(--muted);}
-.lfoot a{color:var(--green);text-decoration:none;font-weight:600;}
-
-/* ── SCREEN 2: CATEGORY ── */
-#s2{background:var(--bg);align-items:center;justify-content:center;}
-.cw{width:100%;max-width:540px;padding:20px;text-align:center;}
-.step-lbl{font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;}
-.cw h2{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;margin-bottom:7px;}
-.cw p{font-size:0.82rem;color:var(--muted);margin-bottom:32px;line-height:1.7;}
-.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;}
-.ccard{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:24px;cursor:pointer;transition:all 0.22s;box-shadow:var(--shadow);}
-.ccard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
-.ccard.s:hover{border-color:var(--green);}
-.ccard.p:hover{border-color:var(--orange);}
-.cci{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.45rem;margin-bottom:14px;}
-.ccard.s .cci{background:var(--green-dim);}
-.ccard.p .cci{background:var(--orange-dim);}
-.ccard h3{font-size:0.97rem;font-weight:700;margin-bottom:6px;}
-.ccard p{font-size:0.77rem;color:var(--muted);line-height:1.6;}
-.cbadge{margin-top:12px;}
-
-/* ── SCREEN 3: PICK COURSE ── */
-#s3{background:var(--bg);flex-direction:column;}
-.ptop{padding:16px 20px 0;display:flex;align-items:center;gap:11px;flex-shrink:0;}
-.ptitle h2{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;}
-.ptitle p{font-size:0.71rem;color:var(--muted);}
-.psearch{padding:13px 20px;flex-shrink:0;}
-.psearch input{width:100%;padding-left:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%237a7a68' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:13px center;}
-.pills{display:flex;gap:7px;padding:0 20px 13px;overflow-x:auto;flex-shrink:0;}
-.pills::-webkit-scrollbar{display:none;}
-.pill{padding:6px 15px;border-radius:999px;font-size:0.73rem;font-weight:600;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all 0.2s;font-family:'Outfit',sans-serif;}
-.pill.active{background:var(--green);color:#fff;border-color:var(--green);}
-.clist{flex:1;overflow-y:auto;padding:0 20px 24px;display:flex;flex-direction:column;gap:11px;}
-.crow{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:15px;display:flex;gap:12px;cursor:pointer;transition:all 0.2s;box-shadow:var(--shadow);}
-.crow:hover{border-color:var(--green);transform:translateX(3px);}
-.cthumb{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
-.cinfo h3{font-size:0.86rem;font-weight:700;margin-bottom:3px;}
-.cinfo p{font-size:0.72rem;color:var(--muted);margin-bottom:7px;}
-.cmeta{display:flex;gap:6px;flex-wrap:wrap;}
-.cpbar{height:3px;background:var(--bg3);border-radius:99px;margin-top:6px;}
-.cpfill{height:100%;background:var(--green);border-radius:99px;}
-
-/* ── SCREEN 4: DASHBOARD ── */
-#s4{flex-direction:row;background:var(--bg);}
-.sidebar{width:212px;background:var(--card);border-right:1.5px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
-.sblogo{padding:18px 16px;border-bottom:1.5px solid var(--border);}
-.sbuser{padding:12px 16px;display:flex;align-items:center;gap:9px;border-bottom:1.5px solid var(--border);}
-.sbuserinfo strong{display:block;font-size:0.79rem;font-weight:700;}
-.sbuserinfo span{font-size:0.64rem;color:var(--muted);}
-.sbnav{flex:1;padding:12px 9px;display:flex;flex-direction:column;gap:1px;overflow-y:auto;}
-.ni{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--r-sm);font-size:0.8rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:'Outfit',sans-serif;}
-.ni:hover{background:var(--bg3);color:var(--ink);}
-.ni.active{background:var(--green-dim);color:var(--green-dark);font-weight:700;}
-.ni .ico{font-size:0.9rem;width:17px;text-align:center;}
-.nbadge{margin-left:auto;background:var(--orange);color:#fff;font-size:0.57rem;font-weight:700;padding:2px 6px;border-radius:999px;}
-.sbbot{padding:11px 9px;border-top:1.5px solid var(--border);}
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.topbar{padding:13px 22px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--card);}
-.topbar h2{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;}
-.tbr{display:flex;align-items:center;gap:9px;}
-.notifbtn{width:34px;height:34px;border-radius:var(--r-sm);background:var(--bg3);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:0.9rem;}
-.ndot{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--orange);border:1px solid #fff;}
-.pg{flex:1;overflow-y:auto;padding:20px 22px;}
-.livebanner{background:linear-gradient(135deg,var(--green-dark),var(--green));border-radius:var(--r);padding:16px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;color:#fff;box-shadow:0 4px 20px rgba(46,139,87,0.3);}
-.livebanner h4{font-size:0.87rem;font-weight:700;margin-bottom:3px;}
-.livebanner p{font-size:0.73rem;opacity:0.85;}
-.lbtn{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.35);padding:8px 14px;border-radius:var(--r-sm);font-size:0.76rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:background 0.2s;white-space:nowrap;}
-.lbtn:hover{background:rgba(255,255,255,0.3);}
-.welcome h2{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;margin-bottom:3px;}
-.welcome p{font-size:0.8rem;color:var(--muted);margin-bottom:20px;}
-.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:20px;}
-.scard{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:15px;box-shadow:var(--shadow);}
-.scard .si{font-size:1.15rem;margin-bottom:7px;}
-.scard .sv{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:700;line-height:1;}
-.scard .sl{font-size:0.67rem;color:var(--muted);margin-top:3px;font-weight:600;}
-.scard .sd{font-size:0.64rem;margin-top:4px;font-weight:600;color:var(--green);}
-.sechead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.sechead h3{font-size:0.88rem;font-weight:700;}
-.sechead a{font-size:0.72rem;color:var(--green);text-decoration:none;font-weight:600;}
-.engrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px;}
-.encard{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:15px;cursor:pointer;transition:all 0.2s;box-shadow:var(--shadow);}
-.encard:hover{border-color:var(--green);transform:translateY(-2px);}
-.entop{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
-.enico{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;}
-.encard h4{font-size:0.82rem;font-weight:700;line-height:1.3;}
-.encard .ct{font-size:0.62rem;color:var(--muted);font-weight:600;font-family:'JetBrains Mono',monospace;margin-top:1px;}
-.plbl{display:flex;justify-content:space-between;font-size:0.69rem;margin-bottom:4px;}
-.plbl span:last-child{color:var(--green);font-weight:700;}
-.pbar{height:4px;background:var(--bg3);border-radius:99px;}
-.pfill{height:100%;border-radius:99px;background:var(--green);}
-.acts{display:flex;flex-direction:column;gap:8px;}
-.aitem{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:12px;display:flex;gap:10px;box-shadow:var(--shadow);}
-.aico{width:30px;height:30px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;}
-.aitem h4{font-size:0.79rem;font-weight:600;margin-bottom:1px;}
-.aitem p{font-size:0.69rem;color:var(--muted);}
-.aitem time{font-size:0.61rem;color:var(--muted2);display:block;margin-top:2px;font-family:'JetBrains Mono',monospace;}
-
-/* ── SCREEN 5: MATERIAL ── */
-#s5{flex-direction:row;background:var(--bg);}
-.matsb{width:268px;background:var(--card);border-right:1.5px solid var(--border);display:flex;flex-direction:column;}
-.matsbh{padding:15px 16px;border-bottom:1.5px solid var(--border);display:flex;gap:9px;align-items:center;}
-.matsbh h3{font-size:0.83rem;font-weight:700;line-height:1.35;flex:1;}
-.mattabs{display:flex;border-bottom:1.5px solid var(--border);}
-.mttab{flex:1;padding:9px;text-align:center;font-size:0.71rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
-.mttab.active{color:var(--green-dark);border-bottom-color:var(--green);}
-.matlist{flex:1;overflow-y:auto;padding:9px;}
-.mitem{padding:8px 10px;border-radius:var(--r-sm);cursor:pointer;display:flex;gap:8px;align-items:center;margin-bottom:2px;transition:background 0.15s;}
-.mitem:hover{background:var(--bg3);}
-.mitem.active{background:var(--green-dim);}
-.mitem.active .mtitle{color:var(--green-dark);font-weight:700;}
-.mice{font-size:0.9rem;width:20px;text-align:center;flex-shrink:0;}
-.minf{flex:1;min-width:0;}
-.mtitle{font-size:0.77rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mmeta{font-size:0.63rem;color:var(--muted);margin-top:1px;}
-.mdone{color:var(--green);font-size:0.72rem;}
-.matmain{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.mattb{padding:12px 20px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--card);}
-.mattb h2{font-size:0.88rem;font-weight:700;flex:1;}
-.vbox{background:#0d1f10;position:relative;aspect-ratio:16/9;flex-shrink:0;max-height:280px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.vbg{font-size:4rem;opacity:0.12;}
-.voverlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:9px;}
-.playbtn{width:60px;height:60px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;box-shadow:0 0 0 0 rgba(46,139,87,0.4);}
-.playbtn:hover{transform:scale(1.08);box-shadow:0 0 28px rgba(46,139,87,0.5);}
-.playbtn svg{width:24px;height:24px;fill:#fff;margin-left:3px;}
-.vlbl{color:rgba(255,255,255,0.65);font-size:0.72rem;font-family:'JetBrains Mono',monospace;}
-.vctrl{display:flex;align-items:center;gap:9px;padding:9px 16px;background:var(--card);border-bottom:1.5px solid var(--border);}
-.vbar{flex:1;height:4px;background:var(--bg3);border-radius:99px;cursor:pointer;}
-.vfill{width:35%;height:100%;background:var(--green);border-radius:99px;}
-.vtime{font-size:0.67rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
-.matcont{flex:1;overflow-y:auto;padding:16px 20px;}
-.matcont h3{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;margin-bottom:9px;}
-.matcont p{font-size:0.82rem;color:#2d2d24;line-height:1.75;margin-bottom:11px;}
-.keybox{background:rgba(46,139,87,0.05);border:1.5px solid rgba(46,139,87,0.18);border-left:3px solid var(--green);border-radius:var(--r-sm);padding:13px;margin-top:13px;}
-.keybox h4{font-size:0.75rem;font-weight:700;color:var(--green-dark);margin-bottom:7px;text-transform:uppercase;letter-spacing:0.05em;}
-.keybox ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
-.keybox li{font-size:0.77rem;color:#2d2d24;display:flex;gap:7px;}
-.keybox li::before{content:'→';color:var(--green);font-weight:700;flex-shrink:0;}
-
-/* ── SCREEN 6: COMMUNITY ── */
-#s6{flex-direction:row;background:var(--bg);}
-.commsb{width:245px;background:var(--card);border-right:1.5px solid var(--border);display:flex;flex-direction:column;}
-.csh{padding:16px;border-bottom:1.5px solid var(--border);}
-.csh h2{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;margin-bottom:3px;}
-.csh p{font-size:0.71rem;color:var(--muted);}
-.cssearch{padding:9px 13px;border-bottom:1.5px solid var(--border);}
-.cssearch input{width:100%;font-size:0.77rem;}
-.cslist{flex:1;overflow-y:auto;padding:9px;}
-.csitem{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:var(--r-sm);font-size:0.78rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:'Outfit',sans-serif;}
-.csitem:hover{background:var(--bg3);color:var(--ink);}
-.csitem.active{background:var(--green-dim);color:var(--green-dark);font-weight:700;}
-.cscount{margin-left:auto;font-size:0.61rem;font-family:'JetBrains Mono',monospace;color:var(--muted2);}
-.commmain{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.commtop{padding:12px 20px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:9px;background:var(--card);}
-.commtop h2{flex:1;font-size:0.9rem;font-weight:700;}
-.posts{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:11px;}
-.post{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:border-color 0.2s;box-shadow:var(--shadow);}
-.post:hover{border-color:var(--green-light);}
-.posthd{display:flex;align-items:flex-start;gap:9px;margin-bottom:9px;}
-.postmeta strong{display:block;font-size:0.79rem;font-weight:700;}
-.postmeta span{font-size:0.67rem;color:var(--muted);}
-.posttitle{font-size:0.86rem;font-weight:700;line-height:1.4;margin-bottom:6px;}
-.postbody{font-size:0.78rem;color:var(--muted);line-height:1.65;margin-bottom:11px;}
-.postfoot{display:flex;align-items:center;gap:7px;}
-.pa{display:flex;align-items:center;gap:4px;font-size:0.71rem;color:var(--muted);cursor:pointer;padding:5px 9px;border-radius:var(--r-sm);border:1px solid transparent;transition:all 0.15s;background:none;font-family:'Outfit',sans-serif;}
-.pa:hover{background:var(--bg3);border-color:var(--border);}
-.pa.liked{color:var(--orange);}
-.threadpanel{width:350px;background:var(--card);border-left:1.5px solid var(--border);display:flex;flex-direction:column;transition:width 0.3s;}
-.threadpanel.hidden{width:0;overflow:hidden;border-left:none;}
-.threadhead{padding:13px 16px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.threadhead h3{font-size:0.85rem;font-weight:700;flex:1;}
-.repliesarea{flex:1;overflow-y:auto;padding:13px;}
-.reply{margin-bottom:13px;display:flex;gap:8px;}
-.replyname{font-size:0.72rem;font-weight:700;margin-bottom:3px;}
-.replytxt{background:var(--bg3);border:1px solid var(--border);border-radius:4px 10px 10px 10px;padding:8px 12px;font-size:0.76rem;line-height:1.6;color:var(--ink);}
-.replyacts{display:flex;gap:7px;margin-top:3px;}
-.replyact{font-size:0.65rem;color:var(--muted);cursor:pointer;}
-.replyact:hover{color:var(--green);}
-.replytime{font-size:0.61rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;}
-.compose{padding:11px 13px;border-top:1.5px solid var(--border);display:flex;gap:7px;flex-shrink:0;}
-.compose textarea{flex:1;resize:none;height:56px;font-size:0.76rem;padding:8px 11px;}
-.compose button{align-self:flex-end;background:var(--green);color:#fff;border:none;border-radius:var(--r-sm);padding:9px 13px;font-weight:700;font-size:0.75rem;cursor:pointer;transition:background 0.2s;font-family:'Outfit',sans-serif;}
-.compose button:hover{background:var(--green-dark);}
-
-/* ── SCREEN 7: MOCK TEST ── */
-#s7{background:var(--bg);flex-direction:column;}
-.testtop{padding:13px 20px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:13px;background:var(--card);flex-shrink:0;}
-.testtop h2{font-size:0.9rem;font-weight:700;flex:1;}
-.timer{display:flex;align-items:center;gap:5px;background:var(--orange-dim);color:var(--orange);padding:6px 12px;border-radius:var(--r-sm);font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:700;}
-.testprog{padding:9px 20px;background:var(--card);border-bottom:1.5px solid var(--border);flex-shrink:0;}
-.tplbl{display:flex;justify-content:space-between;font-size:0.69rem;color:var(--muted);margin-bottom:4px;}
-.tpbar{height:4px;background:var(--bg3);border-radius:99px;}
-.tpfill{width:30%;height:100%;background:linear-gradient(90deg,var(--green),var(--green-light));border-radius:99px;}
-.testbody{flex:1;overflow-y:auto;padding:26px 20px;}
-.qbox{max-width:660px;margin:0 auto;}
-.qnum{font-size:0.69rem;font-weight:700;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;margin-bottom:9px;}
-.qtxt{font-size:0.96rem;font-weight:600;line-height:1.6;margin-bottom:24px;}
-.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
-.opt{display:flex;align-items:center;gap:11px;padding:13px 15px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--card);cursor:pointer;transition:all 0.18s;font-size:0.85rem;box-shadow:var(--shadow);}
-.opt:hover{border-color:var(--green);background:rgba(46,139,87,0.05);}
-.opt.sel{border-color:var(--green);background:var(--green-dim);color:var(--green-dark);font-weight:600;}
-.opt.correct{border-color:var(--green);background:var(--green-dim);color:var(--green-dark);font-weight:600;}
-.opt.wrong{border-color:var(--orange);background:var(--orange-dim);color:var(--orange);font-weight:600;}
-.optlt{width:27px;height:27px;border-radius:7px;background:var(--bg3);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;}
-.opt.sel .optlt,.opt.correct .optlt{background:var(--green);border-color:var(--green);color:#fff;}
-.opt.wrong .optlt{background:var(--orange);border-color:var(--orange);color:#fff;}
-.expl{background:rgba(46,139,87,0.05);border:1.5px solid rgba(46,139,87,0.18);border-left:3px solid var(--green);border-radius:var(--r-sm);padding:13px;margin-bottom:20px;display:none;}
-.expl.show{display:block;}
-.expl h4{font-size:0.77rem;font-weight:700;color:var(--green-dark);margin-bottom:4px;}
-.expl p{font-size:0.78rem;color:var(--ink);line-height:1.65;}
-.testnav{display:flex;gap:8px;justify-content:flex-end;}
-
-/* mobile bottom nav */
-.bnav{display:none;}
-@media(max-width:860px){
-  .sidebar,.commsb,.matsb,.threadpanel{display:none;}
-  .sgrid{grid-template-columns:1fr 1fr;}
-  .engrid{grid-template-columns:1fr;}
-  .bnav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1.5px solid var(--border);z-index:50;}
-  .bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:0.57rem;color:var(--muted);cursor:pointer;padding:7px 4px;}
-  .bn.active{color:var(--green-dark);}
-  .bnic{font-size:1.1rem;}
-  .pg{padding-bottom:66px;}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Auth App</title>
+  <style>
+    /* Basic Layout Styles */
+    body { font-family: sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .screen { display: none; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+    .active { display: block; }
+    input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+    button:disabled { background: #ccc; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 20px; display: none; z-index: 1000; }
+  </style>
 </head>
 <body>
 
-<!-- ══ S1: LOGIN ══ -->
-<div class="screen active" id="s1">
-  <div class="lw">
-    <div class="lhero a1">
-      <svg width="70" height="62" viewBox="0 0 90 80" style="margin-bottom:10px;">
-        <path d="M30 10 A25 25 0 0 0 5 35 L5 60 A25 25 0 0 0 30 80 L30 60 A8 8 0 0 1 18 52 L18 35 A12 12 0 0 1 30 23 Z" fill="#2e8b57"/>
-        <rect x="37" y="8" width="16" height="64" rx="3" fill="#d4620a"/>
-        <rect x="37" y="19" width="16" height="4" rx="1" fill="rgba(0,0,0,0.35)"/>
-        <rect x="37" y="57" width="16" height="4" rx="1" fill="rgba(0,0,0,0.35)"/>
-        <path d="M58 20 A22 22 0 0 1 80 42 A22 22 0 0 1 58 64 L58 50 A10 10 0 0 0 70 42 A10 10 0 0 0 58 34 Z" fill="#3aac6e"/>
-      </svg>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--ink);line-height:1.1;">Jash Institute<br/>of Commerce</div>
-      <div style="font-size:0.68rem;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;margin-top:6px;">// LEARN · CERTIFY · GROW</div>
-    </div>
-    <div class="lcard a2">
-      <h2>Welcome back 👋</h2>
-      <div class="sub">No account yet? <a href="#" onclick="fbSignUp()">Create one free</a></div>
-      <div class="soc">
-        <button class="sb" onclick="fbGoogleSignIn()">🌐 Google</button>
-        <button class="sb" style="opacity:0.45;cursor:not-allowed;" title="Coming soon">🍎 Apple</button>
-      </div>
-      <div class="divline">or use email</div>
-      <div class="fg"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com"/></div>
-      <div class="fg"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')fbSignIn()"/></div>
-      <button id="btn-signin" data-label="Sign In →" class="btn btn-green btn-full" onclick="fbSignIn()" style="margin-top:8px;">Sign In →</button>
-      <button class="btn btn-outline btn-full" onclick="fbSignUp()" style="margin-top:8px;">Create Account →</button>
-    </div>
-    <div class="lfoot a3"><a href="#" onclick="fbForgotPassword()">Forgot password?</a> · <a href="#">Privacy Policy</a></div>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Section 1: Login -->
+  <div id="s1" class="screen active">
+    <h2>Login</h2>
+    <input type="email" id="login-email" placeholder="Email">
+    <input type="password" id="login-pass" placeholder="Password">
+    <button id="btn-signin" onclick="fbSignIn()">Sign In</button>
+    <button onclick="fbGoogleLogin()" style="background:#db4437">Sign in with Google</button>
+    <p>No account? <a href="#" onclick="go('s2')">Sign Up</a></p>
   </div>
-</div>
 
-<!-- ══ S2: CATEGORY ══ -->
-<div class="screen" id="s2">
-  <div class="cw">
-    <div class="step-lbl a1">Step 1 of 2 — Choose your path</div>
-    <h2 class="a2">How will you use JIC?</h2>
-    <p class="a3">Personalise your dashboard based on your goals. You can always change this later.</p>
-    <div class="cat-grid">
-      <div class="ccard s a4" onclick="go('s3')">
-        <div class="cci">🎓</div>
-        <h3>I'm a Student</h3>
-        <p>Preparing for CA, CMA, ACCA, CFA or CPA. Access courses, mock tests, study notes and community.</p>
-        <div class="cbadge"><span class="tag tag-g">Most Popular</span></div>
-      </div>
-      <div class="ccard p a5" onclick="go('s4')">
-        <div class="cci">💼</div>
-        <h3>I'm a Professional</h3>
-        <p>Already certified or working in finance. Access CPD content, career tools and job board.</p>
-        <div class="cbadge"><span class="tag tag-o">Career Focus</span></div>
-      </div>
-    </div>
+  <!-- Section 2: Sign Up -->
+  <div id="s2" class="screen">
+    <h2>Create Account</h2>
+    <input type="email" id="reg-email" placeholder="Email">
+    <input type="password" id="reg-pass" placeholder="Password">
+    <button id="btn-signup" onclick="fbSignUp()">Sign Up</button>
+    <p>Already have an account? <a href="#" onclick="go('s1')">Login</a></p>
   </div>
-</div>
 
-<!-- ══ S3: COURSE PICKER ══ -->
-<div class="screen" id="s3">
-  <div class="ptop">
-    <button class="back" onclick="go('s2')">←</button>
-    <div class="ptitle"><h2>Choose your course</h2><p>Select a certification to get started</p></div>
+  <!-- Section 4: Dashboard -->
+  <div id="s4" class="screen">
+    <h2>Welcome!</h2>
+    <p id="user-display"></p>
+    <button onclick="fbSignOut()" style="background:#6c757d">Sign Out</button>
   </div>
-  <div class="psearch"><input placeholder="Search courses, topics, papers…"/></div>
-  <div class="pills" id="pills">
-    <button class="pill active" onclick="filterC('all',this)">All</button>
-    <button class="pill" onclick="filterC('ca',this)">CA</button>
-    <button class="pill" onclick="filterC('cma',this)">CMA</button>
-    <button class="pill" onclick="filterC('acca',this)">ACCA</button>
-    <button class="pill" onclick="filterC('cfa',this)">CFA</button>
-    <button class="pill" onclick="filterC('cpa',this)">CPA</button>
-  </div>
-  <div class="clist" id="clist"></div>
-</div>
 
-<!-- ══ S4: DASHBOARD ══ -->
-<div class="screen" id="s4">
-  <div class="sidebar">
-    <div class="sblogo">
-      <div style="display:flex;align-items:center;gap:9px;">
-        <svg width="32" height="28" viewBox="0 0 90 80">
-          <path d="M30 10 A25 25 0 0 0 5 35 L5 60 A25 25 0 0 0 30 80 L30 60 A8 8 0 0 1 18 52 L18 35 A12 12 0 0 1 30 23 Z" fill="#2e8b57"/>
-          <rect x="37" y="8" width="16" height="64" rx="3" fill="#d4620a"/>
-          <rect x="37" y="19" width="16" height="4" rx="1" fill="rgba(0,0,0,0.35)"/>
-          <rect x="37" y="57" width="16" height="4" rx="1" fill="rgba(0,0,0,0.35)"/>
-          <path d="M58 20 A22 22 0 0 1 80 42 A22 22 0 0 1 58 64 L58 50 A10 10 0 0 0 70 42 A10 10 0 0 0 58 34 Z" fill="#3aac6e"/>
-        </svg>
-        <div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-weight:700;">JIC</div>
-          <div style="font-size:0.58rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">Jash Institute</div>
-        </div>
-      </div>
-    </div>
-    <div class="sbuser">
-      <div class="avatar" style="width:32px;height:32px;background:var(--green-dim);color:var(--green-dark);font-size:0.7rem;">AR</div>
-      <div class="sbuserinfo"><strong class="user-name">Student</strong><span class="user-email">Loading…</span></div>
-    </div>
-    <nav class="sbnav">
-      <button class="ni active"><span class="ico">🏠</span>Dashboard</button>
-      <button class="ni" onclick="go('s3')"><span class="ico">📚</span>My Courses</button>
-      <button class="ni" onclick="go('s5')"><span class="ico">🎬</span>Classes & Videos</button>
-      <button class="ni" onclick="go('s7')"><span class="ico">📝</span>Mock Tests</button>
-      <button class="ni" onclick="go('s6')"><span class="ico">💬</span>Community<span class="nbadge">9</span></button>
-      <button class="ni" onclick="go('s5')"><span class="ico">📄</span>Study Notes</button>
-      <button class="ni" onclick="go('s5')"><span class="ico">📅</span>Live Classes</button>
-      <button class="ni"><span class="ico">📜</span>Past Papers</button>
-      <button class="ni"><span class="ico">💼</span>Jobs</button>
-      <button class="ni"><span class="ico">📊</span>My Progress</button>
-    </nav>
-    <div class="sbbot">
-      <button class="ni" onclick="go('s1')"><span class="ico">⚙️</span>Settings</button>
-      <button class="ni" onclick="fbSignOut()" style="color:#c0392b;"><span class="ico">🚪</span>Sign Out</button>
-    </div>
-  </div>
-  <div class="main">
-    <div class="topbar">
-      <h2>Dashboard</h2>
-      <div class="tbr">
-        <div class="notifbtn">🔔<span class="ndot"></span></div>
-        <div class="avatar" style="width:32px;height:32px;background:var(--green-dim);color:var(--green-dark);font-size:0.7rem;">AR</div>
-      </div>
-    </div>
-    <div class="pg">
-      <div class="livebanner a1">
-        <div><h4>🔴 Live Class Starting in 20 mins</h4><p>CFA Level I — Equity Valuation · Prof. Mehta · 4:00 PM</p></div>
-        <button class="lbtn" onclick="go('s5')">Join Now →</button>
-      </div>
-      <div class="welcome a2">
-        <h2>Good morning, <span class="user-name">Student</span> 👋</h2>
-        <p>You have 2 live classes today and 9 new replies in the community.</p>
-      </div>
-      <div class="sgrid a3">
-        <div class="scard"><div class="si">🔥</div><div class="sv">14</div><div class="sl">Day Streak</div><div class="sd">↑ Personal best!</div></div>
-        <div class="scard"><div class="si">⏱️</div><div class="sv">38h</div><div class="sl">Study Time</div><div class="sd">↑ 6h this week</div></div>
-        <div class="scard"><div class="si">✅</div><div class="sv">64%</div><div class="sl">Course Progress</div><div class="sd" style="color:var(--orange);">→ On track</div></div>
-        <div class="scard"><div class="si">🎯</div><div class="sv">72%</div><div class="sl">Mock Test Avg</div><div class="sd">↑ +4% this week</div></div>
-      </div>
-      <div class="sechead a4"><h3>My Enrolled Courses</h3><a href="#" onclick="go('s3');return false;">+ Add Course</a></div>
-      <div class="engrid a4">
-        <div class="encard" onclick="go('s5')">
-          <div class="entop"><div class="enico" style="background:var(--orange-dim);">📈</div><div><h4>CFA Level I — Complete</h4><div class="ct">CFA · 6 months</div></div></div>
-          <div class="plbl"><span>Progress</span><span>64%</span></div>
-          <div class="pbar"><div class="pfill" style="width:64%;background:var(--orange);"></div></div>
-        </div>
-        <div class="encard" onclick="go('s5')">
-          <div class="entop"><div class="enico" style="background:var(--green-dim);">📒</div><div><h4>CA Final — SFM</h4><div class="ct">CA · Strategic Financial Mgmt</div></div></div>
-          <div class="plbl"><span>Progress</span><span>28%</span></div>
-          <div class="pbar"><div class="pfill" style="width:28%;"></div></div>
-        </div>
-      </div>
-      <div class="sechead a5"><h3>Recent Activity</h3></div>
-      <div class="acts a5">
-        <div class="aitem"><div class="aico" style="background:var(--green-dim);">🎬</div><div><h4>Watched: Fixed Income — Duration & Convexity</h4><p>CFA Level I · Module 7 · 42 min</p><time>2 hours ago</time></div></div>
-        <div class="aitem"><div class="aico" style="background:var(--orange-dim);">💬</div><div><h4>Replied to: "Best approach to SFM derivatives?"</h4><p>Community · CA Final Forum</p><time>Yesterday, 9:14 PM</time></div></div>
-        <div class="aitem"><div class="aico" style="background:var(--green-dim);">✅</div><div><h4>Mock Test: Equity Valuation — Score 76%</h4><p>45 questions · CFA Level I</p><time>Yesterday, 3:00 PM</time></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="bnav">
-    <div class="bn active" onclick="go('s4')"><span class="bnic">🏠</span>Home</div>
-    <div class="bn" onclick="go('s5')"><span class="bnic">🎬</span>Classes</div>
-    <div class="bn" onclick="go('s7')"><span class="bnic">📝</span>Tests</div>
-    <div class="bn" onclick="go('s6')"><span class="bnic">💬</span>Community</div>
-    <div class="bn" onclick="go('s1')"><span class="bnic">👤</span>Profile</div>
-  </div>
-</div>
+  <script>
+    // Navigation Utility
+    window.go = (id) => {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    };
 
-<!-- ══ S5: MATERIAL ══ -->
-<div class="screen" id="s5">
-  <div class="matsb">
-    <div class="matsbh"><button class="back" onclick="go('s4')">←</button><h3>CFA Level I — Fixed Income</h3></div>
-    <div class="mattabs">
-      <div class="mttab active" onclick="setMT(this)">Videos</div>
-      <div class="mttab" onclick="setMT(this)">Notes</div>
-      <div class="mttab" onclick="setMT(this)">Papers</div>
-    </div>
-    <div class="matlist">
-      <div class="mitem active"><span class="mice">▶️</span><div class="minf"><div class="mtitle">Duration & Convexity</div><div class="mmeta">42 min · Module 7</div></div><span class="mdone">✓</span></div>
-      <div class="mitem"><span class="mice">▶️</span><div class="minf"><div class="mtitle">Yield Curve Strategies</div><div class="mmeta">38 min · Module 8</div></div></div>
-      <div class="mitem"><span class="mice">▶️</span><div class="minf"><div class="mtitle">Credit Analysis Intro</div><div class="mmeta">55 min · Module 9</div></div></div>
-      <div class="mitem"><span class="mice">📄</span><div class="minf"><div class="mtitle">Bond Pricing Summary PDF</div><div class="mmeta">12 pages · Notes</div></div><span class="mdone">✓</span></div>
-      <div class="mitem"><span class="mice">📄</span><div class="minf"><div class="mtitle">IFRS vs GAAP Cheatsheet</div><div class="mmeta">6 pages · Notes</div></div></div>
-      <div class="mitem"><span class="mice">📝</span><div class="minf"><div class="mtitle">Past Paper: Nov 2023</div><div class="mmeta">45 questions · 3 hrs</div></div></div>
-      <div class="mitem"><span class="mice">📝</span><div class="minf"><div class="mtitle">Past Paper: May 2023</div><div class="mmeta">45 questions · 3 hrs</div></div></div>
-    </div>
-  </div>
-  <div class="matmain">
-    <div class="mattb"><button class="back" onclick="go('s4')">←</button><h2>Module 7 — Duration & Convexity</h2><span class="tag tag-o">CFA Level I</span></div>
-    <div class="vbox">
-      <div class="vbg"><span class="vbg">📈</span></div>
-      <div class="voverlay">
-        <div class="playbtn" id="playbtn" onclick="document.getElementById('playbtn').style.opacity='0';document.querySelector('.vlbl').style.opacity='0'">
-          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <div class="vlbl">Duration & Convexity · 42:18</div>
-      </div>
-    </div>
-    <div class="vctrl">
-      <span style="font-size:0.82rem;cursor:pointer;color:var(--muted);">⏸</span>
-      <div class="vbar"><div class="vfill"></div></div>
-      <span class="vtime">14:52 / 42:18</span>
-      <span style="font-size:0.68rem;font-weight:700;color:var(--muted);cursor:pointer;">1×</span>
-      <span style="font-size:0.82rem;cursor:pointer;color:var(--muted);">⛶</span>
-    </div>
-    <div class="matcont">
-      <h3>Duration & Convexity — Lecture Notes</h3>
-      <p>Duration measures a bond's sensitivity to interest rate changes. Modified Duration approximates the % price change for a 1% yield change. Macaulay Duration is the weighted-average time to receive cash flows.</p>
-      <p>Convexity accounts for the curvature in the price-yield relationship. Positively convex bonds gain more when rates fall than they lose when rates rise.</p>
-      <div class="keybox">
-        <h4>⚡ Key Exam Points</h4>
-        <ul>
-          <li>Modified Duration = Macaulay Duration ÷ (1 + y/m)</li>
-          <li>Higher duration = higher interest rate risk</li>
-          <li>Zero-coupon bonds: Macaulay Duration = Maturity</li>
-          <li>Callable bonds show negative convexity at low yields</li>
-          <li>ΔP/P ≈ −D × Δy + ½ × Convexity × (Δy)²</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+    // Toast Utility
+    window.toast = (msg, isError = false) => {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.background = isError ? '#dc3545' : '#333';
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    };
 
-<!-- ══ S6: COMMUNITY ══ -->
-<div class="screen" id="s6">
-  <div class="commsb">
-    <div class="csh"><h2>💬 Community</h2><p>Ask, answer, learn together</p></div>
-    <div class="cssearch"><input placeholder="Search discussions…"/></div>
-    <div class="cslist">
-      <button class="csitem active">🔥 All Discussions<span class="cscount">1.2k</span></button>
-      <button class="csitem">📒 CA Foundation<span class="cscount">234</span></button>
-      <button class="csitem">📗 CA Inter<span class="cscount">411</span></button>
-      <button class="csitem">📕 CA Final<span class="cscount">388</span></button>
-      <button class="csitem">📈 CFA Level I<span class="cscount">296</span></button>
-      <button class="csitem">📊 CFA Level II<span class="cscount">142</span></button>
-      <button class="csitem">🌍 ACCA<span class="cscount">198</span></button>
-      <button class="csitem">🇺🇸 CPA<span class="cscount">156</span></button>
-      <button class="csitem">📋 CMA<span class="cscount">88</span></button>
-      <button class="csitem">💼 Career & Jobs<span class="cscount">204</span></button>
-    </div>
-  </div>
-  <div class="commmain">
-    <div class="commtop">
-      <button class="back" onclick="go('s4')">←</button>
-      <h2>All Discussions</h2>
-      <button class="btn btn-green" style="padding:7px 14px;font-size:0.77rem;">+ Ask Question</button>
-    </div>
-    <div class="posts" id="posts"></div>
-  </div>
-  <div class="threadpanel hidden" id="threadpanel">
-    <div class="threadhead"><button class="back" onclick="closeThread()">✕</button><h3 id="threadtitle">Replies</h3></div>
-    <div class="repliesarea" id="repliesarea"></div>
-    <div class="compose">
-      <textarea id="replyinput" placeholder="Write a helpful reply… 🤝"></textarea>
-      <button onclick="postReply()">Send →</button>
-    </div>
-  </div>
-</div>
+    // Loading Utility
+    window.setLoading = (id, isLoading) => {
+      const btn = document.getElementById(id);
+      btn.disabled = isLoading;
+      btn.innerText = isLoading ? 'Processing...' : (id === 'btn-signin' ? 'Sign In' : 'Sign Up');
+    };
+  </script>
 
-<!-- ══ S7: MOCK TEST ══ -->
-<div class="screen" id="s7">
-  <div class="testtop">
-    <button class="back" onclick="go('s4')">←</button>
-    <h2>CFA Level I — Equity Mock Test</h2>
-    <div class="timer" id="timer">⏱ 02:34:18</div>
-  </div>
-  <div class="testprog">
-    <div class="tplbl"><span>Question 9 of 30</span><span style="color:var(--green);font-weight:700;">30%</span></div>
-    <div class="tpbar"><div class="tpfill"></div></div>
-  </div>
-  <div class="testbody">
-    <div class="qbox">
-      <div class="qnum">QUESTION 09 · EQUITY VALUATION</div>
-      <div class="qtxt">A company has an expected dividend of $2.50 next year, a required return of 10%, and a sustainable growth rate of 4%. Using the Gordon Growth Model, what is the intrinsic value of the stock?</div>
-      <div class="opts">
-        <div class="opt" onclick="pick(this,'wrong')"><span class="optlt">A</span>$25.00</div>
-        <div class="opt" onclick="pick(this,'wrong')"><span class="optlt">B</span>$31.25</div>
-        <div class="opt" onclick="pick(this,'correct')"><span class="optlt">C</span>$41.67</div>
-        <div class="opt" onclick="pick(this,'wrong')"><span class="optlt">D</span>$62.50</div>
-      </div>
-      <div class="expl" id="expl">
-        <h4>✅ Correct Answer: C — $41.67</h4>
-        <p>Gordon Growth Model: P₀ = D₁ ÷ (r − g) = $2.50 ÷ (0.10 − 0.04) = $2.50 ÷ 0.06 = <strong>$41.67</strong><br/><br/>Remember: required return (r) must always exceed growth rate (g), otherwise the model breaks down.</p>
-      </div>
-      <div class="testnav">
-        <button class="btn btn-outline">← Previous</button>
-        <button class="btn btn-green" onclick="go('s4')">Next Question →</button>
-      </div>
-    </div>
-  </div>
-</div>
+  <script type="module">
+    // Firebase Modular SDK Imports (Fixed Version)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
+      signInWithPopup, 
+      GoogleAuthProvider, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-<script>
-function go(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+    // Your Web App's Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-// Courses
-const courses=[
-  {cert:'CA',bg:'rgba(46,139,87,0.1)',e:'📒',t:'CA Foundation — Complete',s:'Foundation · ICAI Aligned',d:'80 hrs',st:'8.2k',p:0},
-  {cert:'CA',bg:'rgba(46,139,87,0.1)',e:'📗',t:'CA Intermediate — Group I',s:'Accounting, Law, Cost & Tax',d:'110 hrs',st:'6.4k',p:28},
-  {cert:'CA',bg:'rgba(46,139,87,0.1)',e:'📕',t:'CA Final — SFM',s:'Strategic Financial Management',d:'90 hrs',st:'4.1k',p:0},
-  {cert:'CFA',bg:'rgba(212,98,10,0.1)',e:'📈',t:'CFA Level I — Complete',s:'All 10 Topics · 2024 Curriculum',d:'120 hrs',st:'11k',p:64},
-  {cert:'CFA',bg:'rgba(212,98,10,0.1)',e:'💹',t:'CFA Level II — Equity Focus',s:'Advanced Valuation',d:'140 hrs',st:'5.8k',p:0},
-  {cert:'ACCA',bg:'rgba(58,172,110,0.1)',e:'🌍',t:'ACCA F3 — Financial Accounting',s:'Applied Skills Level',d:'45 hrs',st:'4.1k',p:0},
-  {cert:'ACCA',bg:'rgba(58,172,110,0.1)',e:'📋',t:'ACCA SBL — Strategic Business',s:'Professional Level',d:'60 hrs',st:'2.9k',p:0},
-  {cert:'CPA',bg:'rgba(46,139,87,0.08)',e:'🇺🇸',t:'CPA FAR — Financial Accounting',s:'AICPA Blueprint Aligned',d:'90 hrs',st:'3.4k',p:0},
-  {cert:'CMA',bg:'rgba(212,98,10,0.08)',e:'📊',t:'CMA Inter — Cost Accounting',s:'ICMAI Syllabus 2022',d:'55 hrs',st:'2.8k',p:0},
-];
-function filterC(cert,el){
-  document.querySelectorAll('.pill').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  const f=cert==='all'?courses:courses.filter(c=>c.cert.toLowerCase()===cert);
-  document.getElementById('clist').innerHTML=f.map(c=>`
-    <div class="crow" onclick="go('s5')">
-      <div class="cthumb" style="background:${c.bg}">${c.e}</div>
-      <div class="cinfo">
-        <h3>${c.t}</h3><p>${c.s}</p>
-        <div class="cmeta">
-          <span class="tag tag-m">⏱ ${c.d}</span>
-          <span class="tag tag-m">👥 ${c.st}</span>
-          ${c.p>0?`<span class="tag tag-g">▶ ${c.p}% done</span>`:'<span class="tag tag-o">✦ Start</span>'}
-        </div>
-        ${c.p>0?`<div class="cpbar"><div class="cpfill" style="width:${c.p}%"></div></div>`:''}
-      </div>
-    </div>`).join('');
-}
-filterC('all',document.querySelector('.pill'));
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-// Community
-const posts=[
-  {id:1,n:'Priya Sharma',i:'PS',c:'#2e8b57',cert:'CA Final',tg:'tag-g',time:'2h ago',title:'Best approach to SFM derivatives? Struggling with options pricing 😅',body:'Going through the SFM chapter on derivatives and really struggling with Black-Scholes. Can someone explain how to approach these in the exam? Any tips?',likes:128,rep:34},
-  {id:2,n:'Rohan Mehta',i:'RM',c:'#d4620a',cert:'CFA Level I',tg:'tag-o',time:'5h ago',title:'Mock exam scores — is 65% enough to pass Level I in November?',body:'Just finished my second full mock and got 65%. CFA Institute says MPS varies around 60–70%. I have 6 weeks left. Should I be worried?',likes:212,rep:89},
-  {id:3,n:'Ananya Krishnan',i:'AK',c:'#3aac6e',cert:'CPA',tg:'tag-g',time:'1d ago',title:'Just cleared FAR with 84! Here\'s my 3-month study plan 🎉',body:'After two failed attempts I finally cracked FAR! Here\'s what worked: Becker + Ninja MCQs, concept-first approach, and governmental accounting focus...',likes:547,rep:156},
-  {id:4,n:'Dev Patel',i:'DP',c:'#d4620a',cert:'ACCA',tg:'tag-o',time:'2d ago',title:'SBL case study tips — running community thread',body:'Pre-seen material is key — spend at least 2 weeks on it before touching past papers. The examiner wants integrated thinking, not siloed answers.',likes:189,rep:61},
-];
-const reps={
-  1:[{n:'Kabir Sen',i:'KS',c:'#2e8b57',t:'1h ago',txt:'For Black-Scholes, N(d1) and N(d2) are always given in CA exams — you don\'t calculate them! Focus on the formula structure and plugging in correctly.'},{n:'Meera Iyer',i:'MI',c:'#d4620a',t:'45m ago',txt:'Also practice put-call parity — it often appears as a crossover concept. Don\'t confuse European vs American options in theory questions.'}],
-  2:[{n:'Aditya Nair',i:'AN',c:'#d4620a',t:'4h ago',txt:'I passed Band 10 with 65–68% on mocks. Focus on Ethics — it can really swing your result. Many candidates underestimate Sections 7–10.'},{n:'Sanya Gupta',i:'SG',c:'#2e8b57',t:'3h ago',txt:'Push for 70%+ on mocks before your exam. In last 6 weeks: 2 full timed mocks per week and review every wrong answer the same day.'}],
-  3:[{n:'Ravi Kumar',i:'RK',c:'#2e8b57',t:'22h ago',txt:'Congratulations!! Governmental accounting is killing me right now. Can you share more about how you approached it?'},{n:'Ananya Krishnan',i:'AK',c:'#3aac6e',t:'20h ago',txt:'@Ravi — watch AICPA videos first (free on their site), then do Becker. Fund accounting is the key concept that unlocks everything else.'}],
-  4:[{n:'Fatima Al-Rashid',i:'FA',c:'#d4620a',t:'1d ago',txt:'I treated the pre-seen like a client brief and kept asking "so what?" for every piece of info. Helped me spot the strategic implications the examiner wants.'}],
-};
-function renderPosts(){
-  document.getElementById('posts').innerHTML=posts.map(p=>`
-    <div class="post" onclick="openThread(${p.id})">
-      <div class="posthd">
-        <div class="avatar" style="width:32px;height:32px;background:${p.c}22;color:${p.c};font-size:0.68rem;">${p.i}</div>
-        <div class="postmeta"><strong>${p.n}</strong><span><span class="tag ${p.tg}" style="font-size:0.6rem;">${p.cert}</span> · ${p.time}</span></div>
-      </div>
-      <div class="posttitle">${p.title}</div>
-      <div class="postbody">${p.body.substring(0,130)}…</div>
-      <div class="postfoot">
-        <button class="pa" onclick="event.stopPropagation();this.classList.toggle('liked');this.textContent=this.classList.contains('liked')?'❤️ '+(${p.likes}+1):'🤍 ${p.likes}'">🤍 ${p.likes}</button>
-        <button class="pa" onclick="event.stopPropagation();openThread(${p.id})">💬 ${p.rep}</button>
-        <button class="pa">🔖</button><button class="pa">↗</button>
-      </div>
-    </div>`).join('');
-}
-renderPosts();
-function openThread(id){
-  const post=posts.find(p=>p.id===id);
-  document.getElementById('threadtitle').textContent=`${post.rep} Replies`;
-  const rs=reps[id]||[];
-  document.getElementById('repliesarea').innerHTML=`
-    <div style="background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:13px;">
-      <div style="font-size:0.78rem;font-weight:700;margin-bottom:4px;">${post.title}</div>
-      <div style="font-size:0.76rem;color:var(--muted);line-height:1.6;">${post.body}</div>
-    </div>
-    ${rs.map(r=>`
-      <div class="reply">
-        <div class="avatar" style="width:26px;height:26px;background:${r.c}22;color:${r.c};font-size:0.6rem;flex-shrink:0;">${r.i}</div>
-        <div style="flex:1;">
-          <div class="replyname">${r.n} <span class="replytime">${r.t}</span></div>
-          <div class="replytxt">${r.txt}</div>
-          <div class="replyacts"><span class="replyact">👍 Like</span><span class="replyact">↩ Reply</span></div>
-        </div>
-      </div>`).join('')}`;
-  document.getElementById('threadpanel').classList.remove('hidden');
-}
-function closeThread(){document.getElementById('threadpanel').classList.add('hidden');}
-function postReply(){
-  const inp=document.getElementById('replyinput');
-  const txt=inp.value.trim();
-  if(!txt)return;
-  const area=document.getElementById('repliesarea');
-  area.innerHTML+=`
-    <div class="reply">
-      <div class="avatar" style="width:26px;height:26px;background:var(--green-dim);color:var(--green-dark);font-size:0.6rem;flex-shrink:0;">AR</div>
-      <div style="flex:1;">
-        <div class="replyname">Arjun Rao <span class="replytime">just now</span></div>
-        <div class="replytxt">${txt}</div>
-        <div class="replyacts"><span class="replyact">👍 Like</span><span class="replyact">↩ Reply</span></div>
-      </div>
-    </div>`;
-  inp.value='';area.scrollTop=area.scrollHeight;
-}
+    // --- Auth State Observer ---
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('user-display').innerText = `Logged in as: ${user.email}`;
+        go('s4');
+      } else {
+        go('s1');
+      }
+    });
 
-// Timer
-let secs=9258;
-setInterval(()=>{
-  secs--;
-  const h=String(Math.floor(secs/3600)).padStart(2,'0');
-  const m=String(Math.floor(secs%3600/60)).padStart(2,'0');
-  const s=String(secs%60).padStart(2,'0');
-  const el=document.getElementById('timer');
-  if(el)el.textContent=`⏱ ${h}:${m}:${s}`;
-},1000);
+    // --- Sign In Logic ---
+    window.fbSignIn = async () => {
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-pass').value;
+      if (!email || !pass) return toast('Fields cannot be empty', true);
 
-// Test
-let answered=false;
-function pick(el,type){
-  if(answered)return;answered=true;
-  document.querySelectorAll('.opt').forEach(o=>o.onclick=null);
-  if(type==='correct'){el.classList.add('correct');}
-  else{el.classList.add('wrong');document.querySelectorAll('.opt')[2].classList.add('correct');}
-  document.getElementById('expl').classList.add('show');
-}
-function setMT(el){
-  document.querySelectorAll('.mttab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-}
-</script>
+      setLoading('btn-signin', true);
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        toast('Success!');
+      } catch (e) {
+        toast(e.message, true);
+      } finally {
+        setLoading('btn-signin', false);
+      }
+    };
 
-<!-- ══ FIREBASE SDK ══ -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-analytics.js";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-  onAuthStateChanged,
-  sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+    // --- Sign Up Logic ---
+    window.fbSignUp = async () => {
+      const email = document.getElementById('reg-email').value;
+      const pass = document.getElementById('reg-pass').value;
+      if (!email || !pass) return toast('Fields cannot be empty', true);
 
-// ── Firebase Config ──
-const firebaseConfig = {
-  apiKey: "AIzaSyCBbPt6qf-iY6xGpZmGXXURpzdp0GzGhz0",
-  authDomain: "student-app-a7a9d.firebaseapp.com",
-  projectId: "student-app-a7a9d",
-  storageBucket: "student-app-a7a9d.firebasestorage.app",
-  messagingSenderId: "881681887743",
-  appId: "1:881681887743:web:1326c637ce2d00933537ca",
-  measurementId: "G-LWGD5KX0D7"
-};
+      setLoading('btn-signup', true);
+      try {
+        await createUserWithEmailAndPassword(auth, email, pass);
+        toast('Account created!');
+      } catch (e) {
+        toast(e.message, true);
+      } finally {
+        setLoading('btn-signup', false);
+      }
+    };
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+    // --- Google Login ---
+    window.fbGoogleLogin = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        toast('Google Login Success!');
+      } catch (e) {
+        toast(e.message, true);
+      }
+    };
 
-// ── Helper: show toast message ──
-function toast(msg, isError=false){
-  let t = document.getElementById('fb-toast');
-  if(!t){ t = document.createElement('div'); t.id='fb-toast'; document.body.appendChild(t); }
-  t.textContent = msg;
-  t.style.cssText = `
-    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-    background:${isError?'#c0392b':'#2e8b57'};color:#fff;
-    padding:10px 22px;border-radius:999px;font-size:0.82rem;font-weight:600;
-    font-family:'Outfit',sans-serif;z-index:9999;
-    box-shadow:0 4px 20px rgba(0,0,0,0.2);
-    animation:fadeUp .3s ease both;
-  `;
-  setTimeout(()=>t.remove(), 3500);
-}
-
-// ── Helper: set loading state on button ──
-function setLoading(btnId, loading){
-  const btn = document.getElementById(btnId);
-  if(!btn) return;
-  btn.disabled = loading;
-  btn.textContent = loading ? 'Please wait…' : btn.dataset.label;
-}
-
-// ── Update UI when user logs in ──
-function updateUserUI(user){
-  // Update sidebar avatar & name
-  const name = user.displayName || user.email.split('@')[0];
-  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2);
-  document.querySelectorAll('.user-name').forEach(el => el.textContent = name);
-  document.querySelectorAll('.user-initials').forEach(el => el.textContent = initials);
-  document.querySelectorAll('.user-email').forEach(el => el.textContent = user.email);
-}
-
-// ── Auth state listener ──
-onAuthStateChanged(auth, (user) => {
-  if(user){
-    updateUserUI(user);
-    // If on login screen, go to category
-    if(document.querySelector('#s1.active')) go('s2');
-  }
-});
-
-// ── Email / Password Sign In ──
-window.fbSignIn = async function(){
-  const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-pass').value;
-  if(!email || !pass){ toast('Please enter email and password', true); return; }
-  setLoading('btn-signin', true);
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-    toast('Welcome back! 👋');
-    go('s2');
-  } catch(e){
-    toast(friendlyError(e.code), true);
-  } finally { setLoading('btn-signin', false); }
-};
-
-// ── Email / Password Sign Up ──
-window.fbSignUp = async function(){
-  const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-pass').value;
-  if(!email || !pass){ toast('Please enter email and password', true); return; }
-  if(pass.length < 6){ toast('Password must be at least 6 characters', true); return; }
-  setLoading('btn-signin', true);
-  try {
-    await createUserWithEmailAndPassword(auth, email, pass);
-    toast('Account created! Welcome to JIC 🎉');
-    go('s2');
-  } catch(e){
-    toast(friendlyError(e.code), true);
-  } finally { setLoading('btn-signin', false); }
-};
-
-// ── Google Sign In ──
-window.fbGoogleSignIn = async function(){
-  try {
-    await signInWithPopup(auth, provider);
-    toast('Signed in with Google ✓');
-    go('s2');
-  } catch(e){
-    toast(friendlyError(e.code), true);
-  }
-};
-
-// ── Sign Out ──
-window.fbSignOut = async function(){
-  await signOut(auth);
-  toast('Signed out. See you soon!');
-  go('s1');
-};
-
-// ── Forgot Password ──
-window.fbForgotPassword = async function(){
-  const email = document.getElementById('login-email').value.trim();
-  if(!email){ toast('Enter your email above first', true); return; }
-  try {
-    await sendPasswordResetEmail(auth, email);
-    toast('Reset email sent! Check your inbox 📧');
-  } catch(e){
-    toast(friendlyError(e.code), true);
-  }
-};
-
-// ── Friendly error messages ──
-function friendlyError(code){
-  const map = {
-    'auth/user-not-found':     'No account found with this email.',
-    'auth/wrong-password':     'Incorrect password. Please try again.',
-    'auth/invalid-email':      'Please enter a valid email address.',
-    'auth/email-already-in-use': 'An account already exists with this email.',
-    'auth/too-many-requests':  'Too many attempts. Please try again later.',
-    'auth/network-request-failed': 'Network error. Check your connection.',
-    'auth/popup-closed-by-user': 'Sign-in popup was closed.',
-  };
-  return map[code] || 'Something went wrong. Please try again.';
-}
-</script>
+    // --- Sign Out ---
+    window.fbSignOut = () => {
+      signOut(auth).then(() => toast('Signed out'));
+    };
+  </script>
 </body>
 </html>
